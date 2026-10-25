@@ -1,0 +1,34 @@
+name: tofu
+
+# Validation only. GitHub-hosted runners cannot reach the homelab, and self-hosted
+# runners on a public repo would let fork PRs run code inside your network.
+# `tofu apply` is run from the DevPod workspace (see Taskfile.yml).
+on:
+  pull_request:
+    paths: ["tofu/**", ".github/workflows/tofu.yaml"]
+  push:
+    branches: [main]
+    paths: ["tofu/**", ".github/workflows/tofu.yaml"]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tofu
+    env:
+      # Dummy value: encryption config needs it, nothing is ever encrypted in CI.
+      TF_VAR_state_passphrase: ci-validate-only-dummy # gitleaks:allow
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: jdx/mise-action@v3
+        with:
+          install_args: opentofu
+
+      - run: tofu fmt -check -recursive -diff
+      - run: tofu init -backend=false -input=false
+      - run: tofu validate

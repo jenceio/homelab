@@ -1,0 +1,50 @@
+name: lint
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: jdx/mise-action@v3
+
+      - name: Install Ansible collections (needed by ansible-lint)
+        run: ansible-galaxy collection install -r ansible/requirements.yml
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Run pre-commit
+        # The gitleaks hook only scans staged changes; the gitleaks job below scans full history.
+        env:
+          SKIP: gitleaks
+        run: pre-commit run --all-files --show-diff-on-failure --color=always
+
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: jdx/mise-action@v3
+        with:
+          install_args: gitleaks
+
+      - name: Scan full git history
+        run: gitleaks git --redact --verbose --exit-code 1 .

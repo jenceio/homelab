@@ -1,0 +1,23 @@
+# Single source of truth for tool versions.
+# Used by the DevPod/devcontainer (post-create.sh) and by GitHub Actions (jdx/mise-action).
+# Renovate keeps these up to date.
+[tools]
+uv = "0.9"
+opentofu = "1.10"
+flux2 = "2.7"
+kubectl = "1.34"
+helm = "3.19"
+kustomize = "5.7"
+kubeconform = "0.7"
+sops = "3.11"
+age = "1.2"
+gitleaks = "8.28"
+pre-commit = "4.3"
+shellcheck = "0.11"
+task = "3.45"
+"pipx:ansible-core" = "2.19"
+"pipx:ansible-lint" = "25"
+
+[settings]
+# Prefer uv over pipx for the pipx: backend (faster, no extra install).
+pipx.uvx = true

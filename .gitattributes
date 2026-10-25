@@ -1,0 +1,4 @@
+# Force LF everywhere: scripts run inside Linux containers even when edited on Windows.
+* text=auto eol=lf
+*.png binary
+*.jpg binary

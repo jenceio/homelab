@@ -1,0 +1,7 @@
+collections:
+  - name: community.sops
+    version: ">=2.0.0"
+  # Official k3s playbooks. Pin `version` to a commit SHA for reproducible installs.
+  - name: https://github.com/k3s-io/k3s-ansible.git
+    type: git
+    version: master

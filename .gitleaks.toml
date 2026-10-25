@@ -1,0 +1,11 @@
+title = "homelab gitleaks config"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "SOPS-encrypted values are ciphertext, not leaks"
+regexTarget = "line"
+regexes = [
+  '''ENC\[AES256_GCM,data:''',
+]

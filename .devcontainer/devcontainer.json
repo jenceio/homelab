@@ -1,0 +1,30 @@
+{
+  "name": "homelab",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "SOPS_AGE_KEY_FILE": "/home/vscode/.config/sops/age/keys.txt",
+    "MISE_YES": "1"
+  },
+  "mounts": [
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.config/sops/age,target=/home/vscode/.config/sops/age,type=bind,readonly",
+    "source=homelab-mise-data,target=/home/vscode/.local/share/mise,type=volume",
+    "source=homelab-pre-commit-cache,target=/home/vscode/.cache/pre-commit,type=volume"
+  ],
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "opentofu.vscode-opentofu",
+        "redhat.vscode-yaml",
+        "redhat.ansible",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "signageos.signageos-vscode-sops",
+        "github.vscode-github-actions",
+        "editorconfig.editorconfig"
+      ]
+    }
+  }
+}

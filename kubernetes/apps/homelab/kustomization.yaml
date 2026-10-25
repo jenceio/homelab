@@ -1,0 +1,20 @@
+# Cluster-specific overlay: add an app by listing its base here and patching values.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../base/podinfo
+patches:
+  - target:
+      kind: HelmRelease
+      name: podinfo
+    patch: |
+      - op: add
+        path: /spec/values/ingress
+        value:
+          enabled: true
+          className: traefik
+          hosts:
+            - host: podinfo.homelab.lan
+              paths:
+                - path: /
+                  pathType: Prefix

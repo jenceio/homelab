@@ -1,0 +1,22 @@
+# SOPS encryption rules. Only files named *.sops.yaml are ever meant to hold secrets.
+#
+# Replace the placeholder with YOUR age public key:
+#   age-keygen -y ~/.config/sops/age/keys.txt
+# Strongly recommended: add a second recipient whose private key is kept offline
+# (password manager / paper) so losing one machine never locks you out.
+keys:
+  - &admin age1replacemewithyourpublicagekeyxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+creation_rules:
+  # Kubernetes Secrets: encrypt only data/stringData so Flux/kustomize can still read metadata.
+  - path_regex: ^kubernetes/.*\.sops\.ya?ml$
+    encrypted_regex: ^(data|stringData)$
+    key_groups:
+      - age:
+          - *admin
+
+  # OpenTofu / Ansible: encrypt every value (keys stay readable).
+  - path_regex: ^(tofu|ansible)/.*\.sops\.ya?ml$
+    key_groups:
+      - age:
+          - *admin

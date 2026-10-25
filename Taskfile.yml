@@ -1,0 +1,72 @@
+# Run `task --list` inside the DevPod workspace.
+version: "3"
+
+vars:
+  CLUSTER: homelab
+
+tasks:
+  default:
+    cmds:
+      - task --list
+
+  lint:
+    desc: Run every pre-commit hook against the whole repo
+    cmds:
+      - pre-commit run --all-files
+
+  validate:k8s:
+    desc: Validate Kubernetes/Flux manifests offline
+    cmds:
+      - bash scripts/validate-kubernetes.sh
+
+  tofu:init:
+    desc: Initialise OpenTofu with decrypted credentials
+    dir: tofu
+    cmds:
+      - sops exec-env secrets.sops.yaml 'tofu init'
+
+  tofu:plan:
+    desc: Plan Proxmox changes (plan file is encrypted)
+    dir: tofu
+    cmds:
+      - sops exec-env secrets.sops.yaml 'tofu plan -out=tfplan'
+
+  tofu:apply:
+    desc: Apply the saved plan
+    dir: tofu
+    cmds:
+      - sops exec-env secrets.sops.yaml 'tofu apply tfplan'
+
+  ansible:deps:
+    desc: Install Ansible collections
+    dir: ansible
+    cmds:
+      - ansible-galaxy collection install -r requirements.yml
+
+  ansible:site:
+    desc: Configure nodes and install k3s
+    dir: ansible
+    cmds:
+      - ansible-playbook playbooks/site.yaml
+
+  flux:sops-secret:
+    desc: Give Flux the age private key so it can decrypt *.sops.yaml
+    cmds:
+      - kubectl create namespace flux-system --dry-run=client -o yaml | kubectl apply -f -
+      - >-
+        kubectl -n flux-system create secret generic sops-age
+        --from-file=age.agekey="${SOPS_AGE_KEY_FILE}"
+        --dry-run=client -o yaml | kubectl apply -f -
+
+  flux:bootstrap:
+    desc: Install Flux and point it at this repo (needs GITHUB_TOKEN and GITHUB_USER in env)
+    requires:
+      vars: [GITHUB_USER]
+    cmds:
+      - >-
+        flux bootstrap github
+        --owner={{.GITHUB_USER}}
+        --repository={{.REPO | default "homelab"}}
+        --branch=main
+        --path=kubernetes/clusters/{{.CLUSTER}}
+        --personal

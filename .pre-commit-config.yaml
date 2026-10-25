@@ -1,0 +1,71 @@
+# Hooks with `language: system` use the tool versions pinned in .mise.toml,
+# so local runs and CI behave identically. Update remote hooks with Renovate
+# or `pre-commit autoupdate`.
+exclude: ^kubernetes/clusters/[^/]+/flux-system/
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-json
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: trailing-whitespace
+
+  # Secret scanning of staged changes. CI additionally scans full git history.
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.28.0
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.37.1
+    hooks:
+      - id: yamllint
+        args: [--strict]
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+      - id: actionlint
+
+  - repo: local
+    hooks:
+      - id: sops-encrypted
+        name: ensure *.sops.yaml files are encrypted
+        entry: bash scripts/check-sops-encrypted.sh
+        language: system
+        files: \.sops\.ya?ml$
+
+      - id: no-plaintext-k8s-secrets
+        name: forbid plaintext Kubernetes Secrets
+        entry: bash scripts/check-k8s-secrets.sh
+        language: system
+        files: ^kubernetes/.*\.ya?ml$
+        exclude: \.sops\.ya?ml$
+
+      - id: tofu-fmt
+        name: tofu fmt
+        entry: tofu fmt -recursive tofu
+        language: system
+        files: \.(tf|tfvars)$
+        pass_filenames: false
+
+      - id: shellcheck
+        name: shellcheck
+        entry: shellcheck
+        language: system
+        types: [shell]
+
+      - id: ansible-lint
+        name: ansible-lint
+        entry: bash -c 'cd ansible && ansible-lint'
+        language: system
+        files: ^ansible/
+        pass_filenames: false

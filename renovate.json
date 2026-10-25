@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests",
+    ":semanticCommits"
+  ],
+  "pre-commit": {
+    "enabled": true
+  },
+  "flux": {
+    "managerFilePatterns": ["/^kubernetes/.+\\.ya?ml$/"]
+  },
+  "kubernetes": {
+    "managerFilePatterns": ["/^kubernetes/.+\\.ya?ml$/"]
+  },
+  "packageRules": [
+    {
+      "description": "Group tool version bumps from .mise.toml",
+      "matchManagers": ["mise"],
+      "groupName": "dev tooling"
+    }
+  ]
+}

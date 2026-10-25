@@ -1,0 +1,25 @@
+name: kubernetes
+
+# Deployment itself is pull-based: Flux in the cluster watches this repo.
+# CI only proves the manifests are valid before they reach main.
+on:
+  pull_request:
+    paths: ["kubernetes/**", "scripts/validate-kubernetes.sh", ".github/workflows/kubernetes.yaml"]
+  push:
+    branches: [main]
+    paths: ["kubernetes/**", "scripts/validate-kubernetes.sh", ".github/workflows/kubernetes.yaml"]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: jdx/mise-action@v3
+        with:
+          install_args: kustomize kubeconform
+
+      - run: bash scripts/validate-kubernetes.sh
