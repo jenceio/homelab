@@ -37,6 +37,12 @@ tasks:
     cmds:
       - sops exec-env secrets.sops.yaml 'tofu apply tfplan'
 
+  tofu:destroy:
+    desc: Destroy the saved plan
+    dir: tofu
+    cmds:
+      - sops exec-env secrets.sops.yaml 'tofu destroy'
+
   ansible:deps:
     desc: Install Ansible collections
     dir: ansible
