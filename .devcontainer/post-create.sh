@@ -2,6 +2,10 @@
 # Runs once after the devcontainer is created (DevPod or VS Code).
 set -euo pipefail
 
+# DevPod runs this hook via `su`, which resets PATH and drops the Dockerfile's
+# ENV PATH, so mise and its shims (pre-commit, ansible-galaxy, ...) are not found.
+export PATH="${HOME}/.local/bin:${HOME}/.local/share/mise/shims:${PATH}"
+
 mise trust --yes
 mise install uv
 mise install
