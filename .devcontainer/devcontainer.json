@@ -10,6 +10,7 @@
   },
   "mounts": [
     "source=${localEnv:HOME}${localEnv:USERPROFILE}/.config/sops/age,target=/root/.config/sops/age,type=bind,readonly",
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.config/git,target=/root/.config/git-host,type=bind,readonly",
     "source=homelab-mise-data,target=/root/.local/share/mise,type=volume",
     "source=homelab-pre-commit-cache,target=/root/.cache/pre-commit,type=volume"
   ],

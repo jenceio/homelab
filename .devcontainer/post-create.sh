@@ -6,6 +6,12 @@ set -euo pipefail
 # ENV PATH, so mise and its shims (pre-commit, ansible-galaxy, ...) are not found.
 export PATH="${HOME}/.local/bin:${HOME}/.local/share/mise/shims:${PATH}"
 
+# Pull in the host's git config (aliases, defaults) without making it the
+# container's global file, so DevPod/VS Code can still write ~/.gitconfig.
+if [[ -f "${HOME}/.config/git-host/config" ]]; then
+  git config --global --replace-all include.path "${HOME}/.config/git-host/config" "git-host"
+fi
+
 mise trust --yes
 mise install uv
 mise install
