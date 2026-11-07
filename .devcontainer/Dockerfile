@@ -6,12 +6,12 @@ RUN apt-get update \
        python3 python3-venv openssh-client rsync jq unzip \
     && rm -rf /var/lib/apt/lists/*
 
-USER vscode
+USER root
 
-ENV MISE_DATA_DIR=/home/vscode/.local/share/mise \
-    PATH=/home/vscode/.local/bin:/home/vscode/.local/share/mise/shims:${PATH}
+ENV MISE_DATA_DIR=/root/.local/share/mise \
+    PATH=/root/.local/bin:/root/.local/share/mise/shims:${PATH}
 
-# Pre-create dirs so the named volumes mounted there inherit vscode ownership.
+# Pre-create dirs so the named volumes mounted there inherit root ownership.
 RUN mkdir -p ~/.local/share/mise ~/.cache/pre-commit ~/.config/sops/age \
     && curl -fsSL https://mise.run | sh \
     && echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
