@@ -5,7 +5,7 @@
 # Strongly recommended: add a second recipient whose private key is kept offline
 # (password manager / paper) so losing one machine never locks you out.
 keys:
-  - &admin age1replacemewithyourpublicagekeyxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  - &admin age10hr6pj0l5vtgwx03zw4y2sh2qqg89vk7rtq3zxg9spmyern4k55qg5hcx8
 
 creation_rules:
   # Kubernetes Secrets: encrypt only data/stringData so Flux/kustomize can still read metadata.

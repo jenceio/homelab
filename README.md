@@ -49,10 +49,10 @@ an [age](https://age-encryption.org) key. Only ciphertext is ever committed.
 
 | Secret | File | Consumed by |
 |---|---|---|
-| Proxmox API token, state passphrase | `tofu/secrets.sops.yaml` | `sops exec-env` → env vars |
+| Proxmox API token, state passphrase, R2 state credentials | `tofu/secrets.sops.yaml` | `sops exec-env` → env vars |
 | k3s cluster token | `ansible/inventory/group_vars/k3s_cluster/secrets.sops.yaml` | `community.sops` vars plugin |
 | App secrets | `kubernetes/**/*.sops.yaml` | Flux `decryption: sops` |
-| OpenTofu state | local, gitignored, **also encrypted** | OpenTofu state encryption |
+| OpenTofu state | Cloudflare R2 bucket `homelab-tofu-state`, **encrypted before upload** | OpenTofu state encryption |
 
 Guard rails that stop plaintext leaking:
 

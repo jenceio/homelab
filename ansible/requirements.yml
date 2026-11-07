@@ -4,4 +4,4 @@ collections:
   # Official k3s playbooks. Pin `version` to a commit SHA for reproducible installs.
   - name: https://github.com/k3s-io/k3s-ansible.git
     type: git
-    version: master
+    version: 165062c410ab8bd194a815d2cbd76f6d83755fd1  # tag 1.2.2

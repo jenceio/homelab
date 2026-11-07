@@ -1,12 +1,12 @@
 # Non-secret settings. Secrets live in secrets.sops.yaml.
-proxmox_node = "pve"
+proxmox_node = "joyprox"
 
 gateway     = "192.168.1.1"
 cidr_prefix = 24
 dns_servers = ["192.168.1.1"]
 
 ssh_public_keys = [
-  # "ssh-ed25519 AAAA... you@laptop",
+  "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICqoGGQ/PueXKed9IBJcB7+U5n728NP7wN5pWTrtXp8k jzsab@JOY-GAMING-PC",
 ]
 
 nodes = {
