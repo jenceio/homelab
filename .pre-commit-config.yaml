@@ -42,6 +42,7 @@ repos:
         entry: bash scripts/check-sops-encrypted.sh
         language: system
         files: \.sops\.ya?ml$
+        exclude: ^\.sops\.ya?ml$
 
       - id: no-plaintext-k8s-secrets
         name: forbid plaintext Kubernetes Secrets
