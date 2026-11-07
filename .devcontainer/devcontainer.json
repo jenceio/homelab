@@ -8,6 +8,7 @@
     "SOPS_AGE_KEY_FILE": "/root/.config/sops/age/keys.txt",
     "MISE_YES": "1"
   },
+  "initializeCommand": "mkdir -p \"${localEnv:HOME}${localEnv:USERPROFILE}/.config/git\"",
   "mounts": [
     "source=${localEnv:HOME}${localEnv:USERPROFILE}/.config/sops/age,target=/root/.config/sops/age,type=bind,readonly",
     "source=${localEnv:HOME}${localEnv:USERPROFILE}/.config/git,target=/root/.config/git-host,type=bind,readonly",
